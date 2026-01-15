@@ -1,0 +1,50 @@
+<div class="columns is-centered">
+  <div class="column is-8">
+    <div class="panel-pro">
+      <div class="is-flex is-justify-content-space-between mb-5">
+        <h3 class="title is-5">Programar Viaje</h3>
+        <button class="delete" onclick="navegar('vDash')"></button>
+      </div>
+      <form id="formReserva">
+        <input type="hidden" name="cedula" id="fCed">
+        <input type="hidden" name="nombre" id="fNom">
+        <input type="hidden" name="jefe" id="fJef">
+        <input type="hidden" name="correoJefe" id="fCorJ">
+        <input type="hidden" name="ceco" id="fCeco">
+        
+        <div class="field">
+          <label class="label is-size-7">¿Reunión virtual descartada?</label>
+          <div class="select is-fullwidth is-small"><select name="virtual" required><option value="">Seleccione...</option><option>SI</option><option>NO</option></select></div>
+        </div>
+
+        <div class="columns">
+          <div class="column">
+            <label class="label is-size-7">Recogida</label>
+            <div class="select is-fullwidth is-small"><select name="puntoRecogida" id="oRec" onchange="aplicarLogicaRuta(); toggleOtro(this, 'otroR')" required>
+                <option value="">Seleccione...</option><option>Fábrica Rionegro</option><option>Edificio Santillana</option><option>Aeropuerto</option><option>Otro</option>
+              </select></div>
+            <input class="input is-small mt-2 is-hidden" id="otroR" name="otroR" placeholder="Lugar específico">
+          </div>
+          <div class="column">
+            <label class="label is-size-7">Destino</label>
+            <div class="select is-fullwidth is-small"><select name="puntoDestino" id="oDes" onchange="aplicarLogicaRuta(); toggleOtro(this, 'otroD')" required>
+                <option value="">Seleccione...</option><option>Fábrica Rionegro</option><option>Edificio Santillana</option><option>Aeropuerto</option><option>Otro</option>
+              </select></div>
+            <input class="input is-small mt-2 is-hidden" id="otroD" name="otroD" placeholder="Lugar específico">
+          </div>
+        </div>
+
+        <div class="columns">
+          <div class="column"><label class="label is-size-7">Fecha</label><input class="input is-small" type="date" name="fecha" id="fFecha" required></div>
+          <div class="column"><label class="label is-size-7">Hora Salida</label><input class="input is-small" type="time" name="hora" id="fHora" required></div>
+          <div class="column"><label class="label is-size-7">Hora Regreso</label><input class="input is-small" type="time" name="hora2"></div>
+        </div>
+
+        <div class="field"><label class="label is-size-7">Celular de contacto</label><input class="input is-small" type="tel" name="celular" required></div>
+        <div class="field"><label class="label is-size-7">Motivo</label><textarea class="textarea is-small" name="motivo" rows="2" required></textarea></div>
+
+        <button type="button" class="button btn-pro is-fullwidth is-medium mt-4" id="btnGuardar" onclick="guardarRegistro()">Confirmar Solicitud</button>
+      </form>
+    </div>
+  </div>
+</div>

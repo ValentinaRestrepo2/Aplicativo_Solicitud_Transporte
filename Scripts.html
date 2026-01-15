@@ -1,0 +1,130 @@
+<script>
+  let sesion = null;
+  let chartInst = null;
+
+  function navegar(id) {
+    document.querySelectorAll('.vista').forEach(v => v.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.body.classList.toggle('modo-login', id === 'vLogin');
+  }
+
+  function ejecutarAcceso() {
+    const ced = document.getElementById('idUser').value;
+    if(!ced) return;
+    const btn = document.getElementById('btnLogin');
+    btn.classList.add('is-loading');
+
+    google.script.run
+      .withSuccessHandler(res => {
+        btn.classList.remove('is-loading');
+        // Blindaje contra respuesta nula
+        if (!res) {
+          alert("Error: El servidor no devolvió datos. Revisa la hoja Maestra.");
+          return;
+        }
+        sesion = res;
+        refrescarInterfaz(res.historial);
+        generarGrafica(res.tendencia);
+        navegar('vDash');
+      })
+      .withFailureHandler(err => { 
+        alert("Acceso denegado: " + err.message); 
+        btn.classList.remove('is-loading'); 
+      })
+      .validarAcceso(ced);
+  }
+
+  function refrescarInterfaz(lista) {
+    document.getElementById('uNombre').innerText = sesion.usuario.nombre;
+    document.getElementById('uTotal').innerText = sesion.total;
+    
+    const anios = [...new Set(sesion.historial.map(h => h.anio))].filter(a => a != null);
+    document.getElementById('fAnio').innerHTML = '<option value="">Año</option>' + anios.map(a => `<option>${a}</option>`).join('');
+
+    const topHtml = sesion.topDestinos.map((d, i) => `<div><b>${i+1}.</b> ${d}</div>`).join('');
+    document.getElementById('topDestinosList').innerHTML = topHtml || "Sin datos";
+
+    const tBody = document.getElementById('tBody');
+    tBody.innerHTML = lista.map(item => `
+      <tr>
+        <td>${item.fecha}</td>
+        <td><small>${item.trayecto}</small></td>
+        <td><span class="tag ${item.estado === 'PENDIENTE' ? 'is-warning is-light' : (item.estado === 'EJECUTADO' ? 'is-success is-light' : 'is-danger is-light')}">${item.estado}</span></td>
+        <td class="has-text-centered">
+          ${item.estado === 'PENDIENTE' ? `<button class="button is-small is-danger is-inverted" onclick="cancelar(${item.idFila})"><i class="fas fa-trash-alt"></i></button>` : '-'}
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function generarGrafica(tendencia) {
+    const ctx = document.getElementById('graficaMensual').getContext('2d');
+    if(chartInst) chartInst.destroy();
+    chartInst = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: tendencia.map(t => t.mes),
+        datasets: [{
+          label: 'Viajes',
+          data: tendencia.map(t => t.total),
+          borderColor: '#005187',
+          backgroundColor: 'rgba(0, 81, 135, 0.05)',
+          fill: true, tension: 0.3, borderWidth: 2, pointRadius: 3
+        }]
+      },
+      options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+    });
+  }
+
+  function filtrar() {
+    const anio = document.getElementById('fAnio').value;
+    const est = document.getElementById('fEst').value;
+    let filt = sesion.historial;
+    if(anio) filt = filt.filter(h => h.anio && h.anio.toString() === anio);
+    if(est) filt = filt.filter(h => h.estado === est);
+    refrescarInterfaz(filt);
+  }
+
+  function limpiarFiltros() {
+    document.getElementById('fAnio').value = "";
+    document.getElementById('fEst').value = "";
+    refrescarInterfaz(sesion.historial);
+  }
+
+  function abrirFormulario() {
+    const f = document.getElementById('formReserva');
+    f.reset();
+    document.getElementById('fCed').value = sesion.usuario.cedula;
+    document.getElementById('fNom').value = sesion.usuario.nombreCompleto;
+    document.getElementById('fJef').value = sesion.usuario.jefe;
+    document.getElementById('fCorJ').value = sesion.usuario.correoJefe;
+    document.getElementById('fCeco').value = sesion.usuario.ceco;
+    document.getElementById('fFecha').min = new Date().toISOString().split("T")[0];
+    navegar('vForm');
+  }
+
+  function guardarRegistro() {
+    const f = document.getElementById('formReserva');
+    if(!f.checkValidity()) return alert("Por favor completa los campos obligatorios.");
+    const btn = document.getElementById('btnGuardar');
+    btn.classList.add('is-loading');
+    const d = {}; new FormData(f).forEach((v,k) => d[k]=v);
+    
+    google.script.run
+      .withSuccessHandler(m => { alert(m); navegar('vDash'); ejecutarAcceso(); })
+      .withFailureHandler(e => { alert(e.message); btn.classList.remove('is-loading'); })
+      .registrarSolicitud(d);
+  }
+
+  function cancelar(id) {
+    if(confirm("¿Cancelar solicitud?")) google.script.run.withSuccessHandler(() => ejecutarAcceso()).cambiarEstadoSolicitud(id, "CANCELADO");
+  }
+
+  function toggleOtro(select, id) { document.getElementById(id).classList.toggle('is-hidden', select.value !== 'Otro'); }
+  function aplicarLogicaRuta() {
+    const o = document.getElementById('oRec').value;
+    const d = document.getElementById('oDes').value;
+    if (o === 'Fábrica Rionegro' && d === 'Edificio Santillana') document.getElementById('fHora').value = '07:00';
+    if (o === 'Edificio Santillana' && d === 'Fábrica Rionegro') document.getElementById('fHora').value = '12:00';
+  }
+</script>

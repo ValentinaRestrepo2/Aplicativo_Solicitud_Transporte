@@ -1,154 +1,89 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <base target="_top">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root {
-      --azul_oscuro: #080827;
-      --azul_medio: #1E2150;
-      --azul_claro: #36337D;
-      --gris_oscuro: #96979C;
-      --gris_claro: #DADADA;
-    }
-
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: var(--azul_medio);
-    }
-
-    .glass {
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      padding: 2.5rem;
-    }
-
-    .vista {
-      display: none;
-    }
-
-    .vista2 {
-      margin-top: 20px;
-    }
-
-    .active {
-      display: block;
-      animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-
-      to {
-        opacity: 1;
-      }
-    }
-
-    .btn-main {
-      background: var(--azul_oscuro);
-      color: white;
-      border-radius: 20px;
-      font-weight: 600;
-      border: none;
-      transition: transform 0.3s ease;
-    }
-
-    .btn-main:hover {
-      transform: translateY(-3px);
-      background: var(--azul_medio);
-      color: white;
-      opacity: 0.9;
-    }
-
-    .stats-box {
-      background: linear-gradient(135deg, #1a2a6c, #b21f1f);
-      color: white;
-      border-radius: 10px;
-      padding: 1rem;
-    }
-
-    .tag-status {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      font-weight: bold;
-    }
-
-    #vLogin.active {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      min-height: calc(100vh);
-    }
-
-    #vLogin .columns {
-      width: 100%;
-    }
-  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <?!= include('Styles'); ?>
 </head>
-
-<body>
-  <div class="container px-4">
+<body class="modo-login">
+  <div class="app-container">
     <div id="vLogin" class="vista active">
-      <div class="columns is-centered">
-        <div class="column is-4">
-          <div class="glass has-text-centered">
-            <img src="https://thumbs.dreamstime.com/b/icono-azul-del-coche-c%C3%ADrculo-107413451.jpg" width="30%">
-            <h1 class="title is-4 mb-5">Solicitud de transporte</h1>
-            <p class="is-4 mb-5">Acceso al Sistema</p>
-            <div class="field">
-              <div class="control has-icons-left">
-                <input class="input is-medium" type="text" id="idUser" placeholder="Escriba su cédula">
-                <span class="icon is-left"><i class="fas fa-id-card"></i></span>
-              </div>
-            </div>
-            <button class="button btn-main is-fullwidth is-medium" id="btnLogin"
-              onclick="ejecutarAcceso()">Ingresar</button>
+      <div class="login-card">
+        <div class="has-text-centered mb-5">
+          <div class="icon-circle mb-3"><i class="fas fa-car-side fa-2x"></i></div>
+          <h1 class="title is-4">Transporte Corp</h1>
+          <p class="subtitle is-6">Portal de Solicitudes</p>
+        </div>
+        <div class="field">
+          <div class="control has-icons-left">
+            <input class="input is-medium" type="text" id="idUser" placeholder="Cédula">
+            <span class="icon is-left"><i class="fas fa-id-card"></i></span>
           </div>
         </div>
+        <button class="button is-fullwidth btn-pro mt-4" id="btnLogin" onclick="ejecutarAcceso()">Ingresar</button>
       </div>
     </div>
 
     <div id="vDash" class="vista">
-      <div class="glass is-fullwidth is-centered">
-        <div class="columns is-vcentered is-mobile is-multiline">
-          <div class="column is-8-desktop is-7-tablet is-12-mobile">
-            <h2 class="title is-3">Hola, <span id="uNombre" class="has-text-link"></span></h2>
-            <button class="button btn-main mt-3" onclick="abrirFormulario()">
-              <span class="icon"><i class="fas fa-plus"></i></span>
-              <span>Nueva Solicitud</span>
-            </button>
-          </div>
-
-          <div class="column is-4-desktop is-5-tablet is-12-mobile">
-            <div class="stats-box">
-              <p class="heading font-bold">Total de Solicitudes</p>
-              <p class="title is-2" id="uTotal" style="color:white">0</p>
+      <nav class="navbar is-white shadow-sm mb-4">
+        <div class="container px-5"><span class="navbar-item has-text-weight-bold">TRANSPORTE APP</span></div>
+      </nav>
+      <div class="container px-5">
+        <div class="columns is-multiline is-variable is-3">
+          <div class="column is-6">
+            <h2 class="title is-4 mb-1">Hola, <span id="uNombre"></span></h2>
+            <div style="margin-top: 2rem;">
+              <button class="button btn-pro is-small" onclick="abrirFormulario()">
+                <span class="icon is-small"><i class="fas fa-plus"></i></span>
+                <span>Nueva Solicitud</span>
+              </button>
             </div>
           </div>
-        </div>
+          
+          <div class="column is-3">
+            <div class="card-stats grad-azul">
+              <p class="heading">Total Solicitudes</p>
+              <p class="title is-3" id="uTotal">0</p>
+            </div>
+          </div>
 
-        <div class="column is-12">
-          <div class="glass">
-            <h3 class="title is-5 mb-4"><i class="fas fa-history mr-2"></i>Mi Historial</h3>
-            <div class="table-container">
-              <table class="table is-fullwidth is-hoverable">
-                <thead>
-                  <tr>
-                    <th>Fecha</th>
-                    <th>Trayecto</th>
-                    <th>Estado</th>
-                    <th class="has-text-centered">Acción</th>
-                  </tr>
-                </thead>
-                <tbody id="tBody"></tbody>
-              </table>
+          <div class="column is-3">
+            <div class="card-stats grad-oscuro">
+              <p class="heading">Top Destinos</p>
+              <div id="topDestinosList" class="mt-1 is-size-7"></div>
+            </div>
+          </div>
+
+          <div class="column is-12 mt-4">
+            <div class="panel-pro">
+              <div class="level is-mobile mb-4">
+                <div class="level-left"><h3 class="title is-6"><i class="fas fa-history mr-2"></i>Historial</h3></div>
+                <div class="level-right">
+                  <div class="field is-grouped">
+                    <div class="control"><div class="select is-small"><select id="fAnio" onchange="filtrar()"></select></div></div>
+                    <div class="control"><div class="select is-small"><select id="fEst" onchange="filtrar()">
+                      <option value="">Estados</option><option>PENDIENTE</option><option>EJECUTADO</option><option>CANCELADO</option>
+                    </select></div></div>
+                    <div class="control"><button class="button is-small is-light" onclick="limpiarFiltros()" title="Limpiar Filtros"><i class="fas fa-sync-alt"></i></button></div>
+                  </div>
+                </div>
+              </div>
+              <div class="table-container-scroll">
+                <table class="table is-fullwidth is-hoverable is-narrow">
+                  <thead><tr><th>Fecha</th><th>Trayecto</th><th>Estado</th><th class="has-text-centered">Acción</th></tr></thead>
+                  <tbody id="tBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-12 mt-4">
+            <div class="panel-pro">
+              <h3 class="title is-6 mb-3">Tendencia (Últimos 10 meses)</h3>
+              <div style="height: 180px;"><canvas id="graficaMensual"></canvas></div>
             </div>
           </div>
         </div>
@@ -156,209 +91,12 @@
     </div>
 
     <div id="vForm" class="vista">
-      <div class="columns is-centered">
-        <div class="column is-8">
-          <div class="glass">
-            <div class="is-flex is-justify-content-space-between mb-5">
-              <h3 class="title is-4">Nueva Reserva</h3>
-              <button class="delete is-large" onclick="navegar('vDash')"></button>
-            </div>
-            <form id="formReserva">
-              <input type="hidden" name="cedula" id="fCed">
-              <input type="hidden" name="nombre" id="fNom">
-              <input type="hidden" name="jefe" id="fJef">
-              <input type="hidden" name="correoJefe" id="fCorJ">
-              <input type="hidden" name="ceco" id="fCeco">
-
-              <div class="field">
-                <label class="label">¿Reunión virtual descartada?</label>
-                <div class="select is-fullwidth">
-                  <select name="virtual" required>
-                    <option value="">Seleccione...</option>
-                    <option>SI</option>
-                    <option>NO</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="columns">
-                <div class="column">
-                  <label class="label">Punto de Recogida</label>
-                  <div class="select is-fullwidth"><select name="puntoRecogida" id="oRec"
-                      onchange="aplicarLogicaRuta(); toggleOtro(this, 'otroR')" required>
-                      <option value="">Seleccione...</option>
-                      <option>Fábrica Rionegro</option>
-                      <option>Edificio Santillana</option>
-                      <option>Aeropuerto</option>
-                      <option>Otro</option>
-                    </select></div>
-                  <input class="input mt-2 is-hidden" id="otroR" name="otroR" placeholder="Indique lugar">
-                </div>
-                <div class="column">
-                  <label class="label">Punto de Destino</label>
-                  <div class="select is-fullwidth"><select name="puntoDestino" id="oDes"
-                      onchange="aplicarLogicaRuta(); toggleOtro(this, 'otroD')" required>
-                      <option value="">Seleccione...</option>
-                      <option>Fábrica Rionegro</option>
-                      <option>Edificio Santillana</option>
-                      <option>Aeropuerto</option>
-                      <option>Otro</option>
-                    </select></div>
-                  <input class="input mt-2 is-hidden" id="otroD" name="otroD" placeholder="Indique destino">
-                </div>
-              </div>
-
-              <div class="columns">
-                <div class="column"><label class="label">Fecha</label><input class="input" type="date" name="fecha"
-                    id="fFecha" required>
-                </div>
-                <div class="column"><label class="label">Hora Salida</label><input class="input" type="time" name="hora"
-                    id="fHora" required>
-                </div>
-                <div class="column"><label class="label">Hora Regreso</label><input class="input" type="time"
-                    name="hora2">
-                </div>
-              </div>
-
-              <div class="field"><label class="label">Celular</label><input class="input" type="tel" name="celular"
-                  placeholder="Ej: 3001234567" required>
-              </div>
-              <div class="field">
-                <label class="label">Motivo de Viaje</label><textarea class="textarea" name="motivo" rows="2"
-                  required></textarea>
-              </div>
-
-              <button type="button" class="button btn-main is-fullwidth is-large" id="btnGuardar"
-                onclick="guardarRegistro()">Confirmar Solicitud</button>
-            </form>
-          </div>
-        </div>
+      <div class="container p-4">
+        <?!= include('Form'); ?>
       </div>
     </div>
   </div>
 
-  <script>
-    let sesionActual = null;
-
-    function navegar(idVista) {
-      document.querySelectorAll('.vista').forEach(v => v.classList.remove('active'));
-      document.getElementById(idVista).classList.add('active');
-    }
-
-    function ejecutarAcceso() {
-      const cedula = document.getElementById('idUser').value;
-      if (!cedula) return alert("Por favor ingrese su cédula.");
-
-      const btn = document.getElementById('btnLogin');
-      btn.classList.add('is-loading');
-
-      google.script.run
-        .withSuccessHandler(res => {
-          btn.classList.remove('is-loading');
-          if (res) {
-            sesionActual = res;
-            refrescarInterfaz();
-            navegar('vDash');
-          }
-        })
-        .withFailureHandler(err => {
-          btn.classList.remove('is-loading');
-          alert(err.message);
-        })
-        .validarAcceso(cedula);
-    }
-
-    function refrescarInterfaz() {
-      if (!sesionActual) return;
-
-      document.getElementById('uNombre').innerText = sesionActual.usuario.nombre;
-      document.getElementById('uTotal').innerText = sesionActual.total;
-
-      const tBody = document.getElementById('tBody');
-      tBody.innerHTML = sesionActual.historial.map(item => `
-        <tr>
-          <td>${item.fecha}</td>
-          <td><small>${item.trayecto}</small></td>
-          <td><span class="tag tag-status ${obtenerClaseEstado(item.estado)}">${item.estado}</span></td>
-          <td class="has-text-centered">
-            ${item.estado === 'PENDIENTE' ?
-          `<button class="button is-small is-danger is-light" onclick="cancelarFila(${item.idFila})">
-                <i class="fas fa-ban"></i>
-              </button>` : '-'}
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    function obtenerClaseEstado(est) {
-      if (est === 'PENDIENTE') return 'is-warning is-light';
-      if (est === 'EJECUTADO') return 'is-success is-light';
-      return 'is-danger is-light';
-    }
-
-    function abrirFormulario() {
-      const f = document.getElementById('formReserva');
-      f.reset();
-      document.getElementById('fCed').value = sesionActual.usuario.cedula;
-      document.getElementById('fNom').value = sesionActual.usuario.nombre;
-      document.getElementById('fJef').value = sesionActual.usuario.jefe;
-      document.getElementById('fCorJ').value = sesionActual.usuario.correoJefe;
-      document.getElementById('fCeco').value = sesionActual.usuario.ceco;
-      document.getElementById('fFecha').min = new Date().toISOString().split("T")[0];
-      navegar('vForm');
-    }
-
-    function toggleOtro(select, inputId) {
-      document.getElementById(inputId).classList.toggle('is-hidden', select.value !== 'Otro');
-    }
-
-    function aplicarLogicaRuta() {
-      const o = document.getElementById('oRec').value;
-      const d = document.getElementById('oDes').value;
-      const h = document.getElementById('fHora');
-      if (o === 'Fábrica Rionegro' && d === 'Edificio Santillana') h.value = '07:00';
-      if (o === 'Edificio Santillana' && d === 'Fábrica Rionegro') h.value = '12:00';
-    }
-
-    function guardarRegistro() {
-      const form = document.getElementById('formReserva');
-      if (!form.checkValidity()) return alert("Complete todos los campos obligatorios.");
-
-      const btn = document.getElementById('btnGuardar');
-      btn.classList.add('is-loading');
-
-      const data = {};
-      new FormData(form).forEach((v, k) => data[k] = v);
-
-      google.script.run
-        .withSuccessHandler(msg => {
-          btn.classList.remove('is-loading');
-          alert(msg);
-          volverAlDash();
-        })
-        .withFailureHandler(err => {
-          btn.classList.remove('is-loading');
-          alert(err.message);
-        })
-        .registrarSolicitud(data);
-    }
-
-    function volverAlDash() {
-      google.script.run
-        .withSuccessHandler(res => {
-          sesionActual = res;
-          refrescarInterfaz();
-          navegar('vDash');
-        })
-        .validarAcceso(sesionActual.usuario.cedula);
-    }
-
-    function cancelarFila(id) {
-      if (confirm("¿Desea cancelar esta solicitud de transporte?")) {
-        google.script.run.withSuccessHandler(() => volverAlDash()).cambiarEstadoSolicitud(id, "CANCELADO");
-      }
-    }
-  </script>
+  <?!= include('Scripts'); ?>
 </body>
-
 </html>
