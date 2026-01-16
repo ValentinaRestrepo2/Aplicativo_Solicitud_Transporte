@@ -4,7 +4,7 @@ const HOJA_MAESTRA = "Maestra";
 function doGet() {
   return HtmlService.createTemplateFromFile('Index')
     .evaluate()
-    .setTitle('Portal Transporte Pro')
+    .setTitle('Solicita tu transporte')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
@@ -14,16 +14,15 @@ function include(nombreArchivo) {
 }
 
 function validarAcceso(cedula) {
-  if (!cedula) throw new Error("Cédula requerida.");
+  if (!cedula) throw new Error("Debe ingresar su cédula.");
   const libro = SpreadsheetApp.getActiveSpreadsheet();
   const hojaM = libro.getSheetByName(HOJA_MAESTRA);
   const datosM = hojaM.getDataRange().getValues();
   let usuario = null;
-  
+
   for (let i = 1; i < datosM.length; i++) {
     if (datosM[i][0].toString() === cedula.toString()) {
       const partes = datosM[i][1].toString().trim().split(/\s+/);
-      // Muestra los dos primeros nombres si existen, sino solo el primero
       const nombreMostrar = partes.length >= 2 ? `${partes[0]} ${partes[1]}` : partes[0];
       usuario = {
         cedula: datosM[i][0].toString(),
@@ -41,27 +40,25 @@ function validarAcceso(cedula) {
 
   const hojaS = libro.getSheetByName(HOJA_REGISTROS);
   const datosS = hojaS.getDataRange().getValues();
-  
-  // Procesamos el historial con validación estricta de fechas para evitar el error 'null'
+
   const historial = datosS.filter(f => f[3].toString() === cedula.toString()).map((fila, index) => {
     let fechaObj = fila[11] instanceof Date ? fila[11] : new Date(fila[11]);
     let fechaValida = !isNaN(fechaObj.getTime());
-    
+
     return {
       idFila: index + 1,
       fecha: fechaValida ? Utilities.formatDate(fechaObj, "GMT-5", "dd/MM/yyyy") : "S/F",
       fechaIso: fechaValida ? Utilities.formatDate(fechaObj, "GMT-5", "yyyy-MM-dd") : null,
       trayecto: `${fila[9]} ➔ ${fila[10]}`,
       destino: fila[10],
-      estado: fila[15] || "PENDIENTE",
+      estado: fila[15] || "Pendiente",
       mes: fechaValida ? fechaObj.getMonth() : null,
       anio: fechaValida ? fechaObj.getFullYear() : null
     };
   }).reverse();
 
-  // Cálculo Top 3 Destinos
   const conteoDestinos = historial.reduce((acc, cur) => {
-    if(cur.destino) acc[cur.destino] = (acc[cur.destino] || 0) + 1;
+    if (cur.destino) acc[cur.destino] = (acc[cur.destino] || 0) + 1;
     return acc;
   }, {});
 
@@ -70,7 +67,6 @@ function validarAcceso(cedula) {
     .slice(0, 3)
     .map(d => d[0]);
 
-  // Lógica Tendencia (Últimos 10 meses móviles)
   const tendencia = [];
   const hoy = new Date();
   for (let i = 9; i >= 0; i--) {
@@ -94,14 +90,13 @@ function registrarSolicitud(f) {
   const libro = SpreadsheetApp.getActiveSpreadsheet();
   const hoja = libro.getSheetByName(HOJA_REGISTROS);
   const datos = hoja.getDataRange().getValues();
-  
-  // Validación de DUPLICADOS (Cédula + Fecha + Hora)
-  const existeDuplicado = datos.some(fila => 
-    fila[3].toString() === f.cedula.toString() && 
-    fila[11] instanceof Date && 
+
+  const existeDuplicado = datos.some(fila =>
+    fila[3].toString() === f.cedula.toString() &&
+    fila[11] instanceof Date &&
     Utilities.formatDate(fila[11], "GMT-5", "yyyy-MM-dd") === f.fecha &&
     fila[12].toString() === f.hora &&
-    fila[15] !== "CANCELADO"
+    fila[15] !== "Cancelado"
   );
 
   if (existeDuplicado) throw new Error("Ya tienes una solicitud activa para esa misma fecha y hora.");
@@ -111,9 +106,9 @@ function registrarSolicitud(f) {
     f.celular, f.jefe, f.correoJefe, f.ceco,
     f.puntoRecogida === "Otro" ? f.otroR : f.puntoRecogida,
     f.puntoDestino === "Otro" ? f.otroD : f.puntoDestino,
-    f.fecha, f.hora, f.hora2, f.motivo, "PENDIENTE"
+    f.fecha, f.hora, f.motivo, "Pendiente"
   ];
-  
+
   hoja.appendRow(nuevaFila);
   return "¡Solicitud registrada con éxito!";
 }

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <base target="_top">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
@@ -8,18 +9,19 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <?!= include('Styles'); ?>
 </head>
+
 <body class="modo-login">
   <div class="app-container">
     <div id="vLogin" class="vista active">
       <div class="login-card">
         <div class="has-text-centered mb-5">
           <div class="icon-circle mb-3"><i class="fas fa-car-side fa-2x"></i></div>
-          <h1 class="title is-4">Transporte Corp</h1>
-          <p class="subtitle is-6">Portal de Solicitudes</p>
+          <h1 class="title is-4">Solicitud de transporte</h1>
+          <p class="subtitle is-6">Acceso al aplicativo</p>
         </div>
         <div class="field">
           <div class="control has-icons-left">
-            <input class="input is-medium" type="text" id="idUser" placeholder="Cédula">
+            <input class="input is-medium" type="text" id="idUser" placeholder="Escriba aquí su cédula">
             <span class="icon is-left"><i class="fas fa-id-card"></i></span>
           </div>
         </div>
@@ -28,52 +30,83 @@
     </div>
 
     <div id="vDash" class="vista">
-      <nav class="navbar is-white shadow-sm mb-4">
-        <div class="container px-5"><span class="navbar-item has-text-weight-bold">TRANSPORTE APP</span></div>
+      <nav class="navbar is-white shadow-sm mb-4" style="margin: 10px; border-radius:15px">
+        <div class="container px-5" style="margin: 10px;">
+          <img
+            src="https://lh3.googleusercontent.com/pw/AP1GczNZRObKqyEufIRE8BtGpZcJxFn95wit3yICCVoogtV3jzQiLwbl7AVa4QqsW6jpXHRhtbuinQmSCow8iJjAI0bh4OYsgxIzhoApLlqQ71PNfpHkMAmubVsYrrGDxPUC-gPHTnbgGLd-E_6jq9IjhpOPnA=w541-h567-s-no-gm?authuser=0"
+            width="5%" height="5%">
+          <span class="navbar-item has-text-weight-bold">Aplicativo para solicitud de transporte</span>
+        </div>
       </nav>
       <div class="container px-5">
         <div class="columns is-multiline is-variable is-3">
           <div class="column is-6">
-            <h2 class="title is-4 mb-1">Hola, <span id="uNombre"></span></h2>
+            <h2 class="title is-4 mb-1" style="margin-top:10px">👋 ¡Hola, <span id="uNombre"></span>!</h2>
             <div style="margin-top: 2rem;">
-              <button class="button btn-pro is-small" onclick="abrirFormulario()">
+              <button class="button btn-pro" onclick="abrirFormulario()">
                 <span class="icon is-small"><i class="fas fa-plus"></i></span>
                 <span>Nueva Solicitud</span>
               </button>
             </div>
           </div>
-          
+
           <div class="column is-3">
             <div class="card-stats grad-azul">
-              <p class="heading">Total Solicitudes</p>
-              <p class="title is-3" id="uTotal">0</p>
+              <div class="stats-header">
+                <div class="stats-icon"><i class="fas fa-car"></i></div>
+                <p class="stats-label">Solicitudes Realizadas</p>
+              </div>
+              <p class="stats-value" id="uTotal">0</p>
             </div>
           </div>
 
           <div class="column is-3">
-            <div class="card-stats grad-oscuro">
-              <p class="heading">Top Destinos</p>
-              <div id="topDestinosList" class="mt-1 is-size-7"></div>
+            <div class="card-stats grad-azul">
+              <div class="stats-header">
+                <div class="stats-icon"><i class="fas fa-star"></i></div>
+                <p class="stats-label">Destinos más visitados</p>
+              </div>
+              <div id="topDestinosList" class="stats-value-list">
+              </div>
             </div>
           </div>
 
           <div class="column is-12 mt-4">
             <div class="panel-pro">
               <div class="level is-mobile mb-4">
-                <div class="level-left"><h3 class="title is-6"><i class="fas fa-history mr-2"></i>Historial</h3></div>
+                <div class="level-left">
+                  <h3 class="title is-6"><i class="fas fa-history mr-2"></i>Historial</h3>
+                </div>
                 <div class="level-right">
                   <div class="field is-grouped">
-                    <div class="control"><div class="select is-small"><select id="fAnio" onchange="filtrar()"></select></div></div>
-                    <div class="control"><div class="select is-small"><select id="fEst" onchange="filtrar()">
-                      <option value="">Estados</option><option>PENDIENTE</option><option>EJECUTADO</option><option>CANCELADO</option>
-                    </select></div></div>
-                    <div class="control"><button class="button is-small is-light" onclick="limpiarFiltros()" title="Limpiar Filtros"><i class="fas fa-sync-alt"></i></button></div>
+                    <div class="control">
+                      <div class="select is-small"><select id="fAnio" onchange="filtrar()"></select></div>
+                    </div>
+                    <div class="control">
+                      <div class="select is-small"><select id="fEst" onchange="filtrar()">
+                          <option value="">Estados</option>
+                          <option>Pendiente</option>
+                          <option>Ejecutado</option>
+                          <option>Cancelado</option>
+                        </select></div>
+                    </div>
+                    <div class="control">
+                      <button class="button is-small is-light" onclick="limpiarFiltros()" title="Limpiar Filtros"><i
+                          class="fas fa-sync-alt"></i></button>
+                    </div>
                   </div>
                 </div>
               </div>
               <div class="table-container-scroll">
                 <table class="table is-fullwidth is-hoverable is-narrow">
-                  <thead><tr><th>Fecha</th><th>Trayecto</th><th>Estado</th><th class="has-text-centered">Acción</th></tr></thead>
+                  <thead>
+                    <tr>
+                      <th>Fecha</th>
+                      <th>Trayecto</th>
+                      <th>Estado</th>
+                      <th class="has-text-centered">Acción</th>
+                    </tr>
+                  </thead>
                   <tbody id="tBody"></tbody>
                 </table>
               </div>
@@ -82,7 +115,7 @@
 
           <div class="column is-12 mt-4">
             <div class="panel-pro">
-              <h3 class="title is-6 mb-3">Tendencia (Últimos 10 meses)</h3>
+              <h3 class="title is-6 mb-3">Solicitudes realizadas (Últimos 10 meses)</h3>
               <div style="height: 180px;"><canvas id="graficaMensual"></canvas></div>
             </div>
           </div>
@@ -99,4 +132,5 @@
 
   <?!= include('Scripts'); ?>
 </body>
+
 </html>

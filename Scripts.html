@@ -10,14 +10,13 @@
 
   function ejecutarAcceso() {
     const ced = document.getElementById('idUser').value;
-    if(!ced) return;
+    if (!ced) return;
     const btn = document.getElementById('btnLogin');
     btn.classList.add('is-loading');
 
     google.script.run
       .withSuccessHandler(res => {
         btn.classList.remove('is-loading');
-        // Blindaje contra respuesta nula
         if (!res) {
           alert("Error: El servidor no devolvió datos. Revisa la hoja Maestra.");
           return;
@@ -27,9 +26,9 @@
         generarGrafica(res.tendencia);
         navegar('vDash');
       })
-      .withFailureHandler(err => { 
-        alert("Acceso denegado: " + err.message); 
-        btn.classList.remove('is-loading'); 
+      .withFailureHandler(err => {
+        alert("Acceso denegado: " + err.message);
+        btn.classList.remove('is-loading');
       })
       .validarAcceso(ced);
   }
@@ -37,11 +36,11 @@
   function refrescarInterfaz(lista) {
     document.getElementById('uNombre').innerText = sesion.usuario.nombre;
     document.getElementById('uTotal').innerText = sesion.total;
-    
+
     const anios = [...new Set(sesion.historial.map(h => h.anio))].filter(a => a != null);
     document.getElementById('fAnio').innerHTML = '<option value="">Año</option>' + anios.map(a => `<option>${a}</option>`).join('');
 
-    const topHtml = sesion.topDestinos.map((d, i) => `<div><b>${i+1}.</b> ${d}</div>`).join('');
+    const topHtml = sesion.topDestinos.map((d, i) => `<div>${i + 1}. ${d}</div>`).join('');
     document.getElementById('topDestinosList').innerHTML = topHtml || "Sin datos";
 
     const tBody = document.getElementById('tBody');
@@ -49,9 +48,9 @@
       <tr>
         <td>${item.fecha}</td>
         <td><small>${item.trayecto}</small></td>
-        <td><span class="tag ${item.estado === 'PENDIENTE' ? 'is-warning is-light' : (item.estado === 'EJECUTADO' ? 'is-success is-light' : 'is-danger is-light')}">${item.estado}</span></td>
+        <td><span class="tag ${item.estado === 'Pendiente' ? 'is-warning is-light' : (item.estado === 'Ejecutado' ? 'is-success is-light' : 'is-danger is-light')}">${item.estado}</span></td>
         <td class="has-text-centered">
-          ${item.estado === 'PENDIENTE' ? `<button class="button is-small is-danger is-inverted" onclick="cancelar(${item.idFila})"><i class="fas fa-trash-alt"></i></button>` : '-'}
+          ${item.estado === 'Pendiente' ? `<button class="button is-small is-danger is-inverted" onclick="cancelar(${item.idFila})"><i class="fas fa-trash-alt"></i></button>` : '-'}
         </td>
       </tr>
     `).join('');
@@ -59,7 +58,7 @@
 
   function generarGrafica(tendencia) {
     const ctx = document.getElementById('graficaMensual').getContext('2d');
-    if(chartInst) chartInst.destroy();
+    if (chartInst) chartInst.destroy();
     chartInst = new Chart(ctx, {
       type: 'line',
       data: {
@@ -80,8 +79,8 @@
     const anio = document.getElementById('fAnio').value;
     const est = document.getElementById('fEst').value;
     let filt = sesion.historial;
-    if(anio) filt = filt.filter(h => h.anio && h.anio.toString() === anio);
-    if(est) filt = filt.filter(h => h.estado === est);
+    if (anio) filt = filt.filter(h => h.anio && h.anio.toString() === anio);
+    if (est) filt = filt.filter(h => h.estado === est);
     refrescarInterfaz(filt);
   }
 
@@ -105,11 +104,11 @@
 
   function guardarRegistro() {
     const f = document.getElementById('formReserva');
-    if(!f.checkValidity()) return alert("Por favor completa los campos obligatorios.");
+    if (!f.checkValidity()) return alert("Por favor completa los campos obligatorios.");
     const btn = document.getElementById('btnGuardar');
     btn.classList.add('is-loading');
-    const d = {}; new FormData(f).forEach((v,k) => d[k]=v);
-    
+    const d = {}; new FormData(f).forEach((v, k) => d[k] = v);
+
     google.script.run
       .withSuccessHandler(m => { alert(m); navegar('vDash'); ejecutarAcceso(); })
       .withFailureHandler(e => { alert(e.message); btn.classList.remove('is-loading'); })
@@ -117,7 +116,7 @@
   }
 
   function cancelar(id) {
-    if(confirm("¿Cancelar solicitud?")) google.script.run.withSuccessHandler(() => ejecutarAcceso()).cambiarEstadoSolicitud(id, "CANCELADO");
+    if (confirm("¿Cancelar solicitud?")) google.script.run.withSuccessHandler(() => ejecutarAcceso()).cambiarEstadoSolicitud(id, "Cancelado");
   }
 
   function toggleOtro(select, id) { document.getElementById(id).classList.toggle('is-hidden', select.value !== 'Otro'); }

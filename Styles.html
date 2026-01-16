@@ -1,45 +1,187 @@
 <style>
   :root {
-    --c1: #005187; --c2: #4d82bc; --c3: #84b6f4; --c4: #c4dafa;
+    --c1: #004995;
+    --c2: #4d82bc;
+    --c3: #84b6f4;
+    --c4: #c4dafa;
   }
 
-  body { font-family: 'Poppins', sans-serif; background-color: #F4F7FA; margin: 0; overflow: hidden; height: 100vh; }
-  
-  /* Scroll único principal */
-  .app-container { height: 100vh; overflow-y: auto; overflow-x: hidden; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #E3E3E2;
+    margin: 0;
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  .app-container {
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  #uNombre {
+    color: var(--c1);
+    font-weight: 600;
+  }
 
   body.modo-login .app-container {
-    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=1350&q=80');
-    background-size: cover; background-position: center;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=1350&q=80');
+    background-size: cover;
+    background-position: center;
   }
 
-  .vista { display: none !important; }
-  .vista.active { display: block !important; }
-
-  .login-card { background: #fff; padding: 2.5rem; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); width: 380px; margin: 15vh auto; }
-
-  /* Tarjetas optimizadas */
-  .card-stats { 
-    padding: 1rem 1.2rem; border-radius: 12px; color: white; 
-    height: 90px; display: flex; flex-direction: column; justify-content: center; 
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+  .vista {
+    display: none !important;
   }
-  .grad-azul { background: linear-gradient(135deg, #1a2a6c, #b21f1f); }
-  .grad-oscuro { background-color: var(--c1); }
-  
-  .card-stats .title { color: white !important; margin: 0 !important; font-size: 1.6rem !important; }
-  .card-stats .heading { color: rgba(255,255,255,0.8); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; }
 
-  .btn-pro { background-color: var(--c1); color: white; border-radius: 8px; font-weight: 600; border: none; transition: 0.2s; }
-  .btn-pro:hover { transform: translateY(-2px); background-color: var(--c2); color: white; }
-  .btn-pro.is-small { padding: 0.4rem 1rem; font-size: 0.8rem; }
+  .vista.active {
+    display: block !important;
+  }
 
-  .panel-pro { background: #fff; border-radius: 15px; padding: 1.2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.03); border: 1px solid #f0f0f0; }
-  
-  /* Scroll interno de la tabla */
-  .table-container-scroll { max-height: 250px; overflow-y: auto; border-radius: 8px; border: 1px solid #f5f5f5; }
-  .table { font-size: 0.8rem; }
-  
-  .icon-circle { width: 60px; height: 60px; background: var(--c4); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; color: var(--c1); }
-  .tag { font-size: 0.65rem !important; font-weight: 700 !important; border-radius: 4px !important; }
+  .login-card {
+    background: #fff;
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    width: 380px;
+    margin: 15vh auto;
+  }
+
+  .card-stats {
+    position: relative;
+    padding: 1.2rem 1rem;
+    border-radius: 18px;
+    color: white;
+    height: 105px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    transition: transform 0.3s ease;
+  }
+
+  .grad-azul {
+    background: linear-gradient(135deg, #1A2B4C, #1D70B7);
+    box-shadow: 5px 5px 15px rgba(26, 43, 76, 0.3);
+  }
+
+  .grad-oscuro {
+    background-color: #1A2B4C;
+    box-shadow: 5px 5px 15px rgba(26, 43, 76, 0.3);
+  }
+
+  .stats-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .stats-icon {
+    position: static !important;
+    font-size: 1rem;
+    opacity: 0.9;
+    display: flex;
+    align-items: center;
+  }
+
+  .stats-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 0 !important;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .table {
+    font-size: 0.95rem !important;
+  }
+
+  .stats-value {
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #ffffff !important;
+  }
+
+  #topDestinosList {
+    font-size: 0.75rem;
+    line-height: 1.2;
+    font-weight: 600;
+  }
+
+  #topDestinosList div {
+    margin-bottom: 2px;
+  }
+
+  .card-stats .title {
+    color: white !important;
+    margin: 0 !important;
+    font-size: 1.6rem !important;
+  }
+
+  .card-stats .heading {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .btn-pro {
+    background-color: var(--c1);
+    color: white;
+    border-radius: 20px;
+    font-weight: 600;
+    border: none;
+    transition: 0.2s;
+  }
+
+  .btn-pro:hover {
+    transform: translateY(-2px);
+    background-color: var(--c2);
+    color: white;
+  }
+
+  .btn-pro.is-small {
+    padding: 0.4rem 1rem;
+    font-size: 1.2rem;
+  }
+
+  .panel-pro {
+    background: #fff;
+    border-radius: 15px;
+    padding: 1.2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    border: 1px solid #f0f0f0;
+  }
+
+  .table-container-scroll {
+    max-height: 250px;
+    overflow-y: auto;
+    border-radius: 8px;
+    border: 1px solid #f5f5f5;
+  }
+
+  .table {
+    font-size: 0.8rem;
+  }
+
+  .icon-circle {
+    width: 60px;
+    height: 60px;
+    background: var(--c4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    color: var(--c1);
+  }
+
+  .tag {
+    font-size: 1 rem !important;
+    font-weight: 700 !important;
+    border-radius: 4px !important;
+  }
 </style>
