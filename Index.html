@@ -7,6 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <?!= include('Styles'); ?>
 </head>
 
@@ -16,7 +17,7 @@
       <div class="login-card">
         <div class="has-text-centered mb-5">
           <div class="icon-circle mb-3"><i class="fas fa-car-side fa-2x"></i></div>
-          <h1 class="title is-4">Solicitud de transporte</h1>
+          <h1 class="title is-4">Solicitar transporte</h1>
           <p class="subtitle is-6">Acceso al aplicativo</p>
         </div>
         <div class="field">
@@ -30,14 +31,23 @@
     </div>
 
     <div id="vDash" class="vista">
-      <nav class="navbar is-white shadow-sm mb-4" style="margin: 10px; border-radius:15px">
-        <div class="container px-5" style="margin: 10px;">
-          <img
-            src="https://lh3.googleusercontent.com/pw/AP1GczNZRObKqyEufIRE8BtGpZcJxFn95wit3yICCVoogtV3jzQiLwbl7AVa4QqsW6jpXHRhtbuinQmSCow8iJjAI0bh4OYsgxIzhoApLlqQ71PNfpHkMAmubVsYrrGDxPUC-gPHTnbgGLd-E_6jq9IjhpOPnA=w541-h567-s-no-gm?authuser=0"
-            width="5%" height="5%">
-          <span class="navbar-item has-text-weight-bold">Aplicativo para solicitud de transporte</span>
+      <nav class="navbar is-white shadow-sm" id="mainNav">
+        <div class="container is-fluid px-5">
+          <div class="navbar-brand is-flex is-align-items-center" style="width: 100%;">
+            <div class="is-flex is-align-items-center">
+              <img src="" id="navLogo" alt="Logo">
+              <span class="has-text-weight-bold ml-3 is-size-6-mobile">Aplicativo solicitud de transporte</span>
+            </div>
+            <div class="ml-auto">
+              <button class="button is-danger is-light btn-logout" onclick="cerrarSesion()">
+                <span class="icon"><i class="fas fa-sign-out-alt"></i></span>
+                <span class="is-hidden-mobile">Cerrar Sesión</span>
+              </button>
+            </div>
+          </div>
         </div>
       </nav>
+
       <div class="container px-5">
         <div class="columns is-multiline is-variable is-3">
           <div class="column is-6">
@@ -64,7 +74,7 @@
             <div class="card-stats grad-azul">
               <div class="stats-header">
                 <div class="stats-icon"><i class="fas fa-star"></i></div>
-                <p class="stats-label">Destinos más visitados</p>
+                <p class="stats-label">Destinos más solicitados</p>
               </div>
               <div id="topDestinosList" class="stats-value-list">
               </div>

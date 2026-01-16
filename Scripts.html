@@ -18,7 +18,7 @@
       .withSuccessHandler(res => {
         btn.classList.remove('is-loading');
         if (!res) {
-          alert("Error: El servidor no devolvió datos. Revisa la hoja Maestra.");
+          Swal.fire({ icon: 'error', title: 'Error', text: 'Cédula no encontrada en la base maestra.' });
           return;
         }
         sesion = res;
@@ -27,7 +27,7 @@
         navegar('vDash');
       })
       .withFailureHandler(err => {
-        alert("Acceso denegado: " + err.message);
+        Swal.fire({ icon: 'error', title: 'Acceso denegado', text: err.message });
         btn.classList.remove('is-loading');
       })
       .validarAcceso(ced);
@@ -90,6 +90,23 @@
     refrescarInterfaz(sesion.historial);
   }
 
+  function cerrarSesion() {
+    Swal.fire({
+      title: '¿Cerrar Sesión?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#004995',
+      confirmButtonText: 'Sí, salir',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        sesion = null;
+        document.getElementById('idUser').value = "";
+        navegar('vLogin');
+      }
+    });
+  }
+
   function abrirFormulario() {
     const f = document.getElementById('formReserva');
     f.reset();
@@ -104,19 +121,43 @@
 
   function guardarRegistro() {
     const f = document.getElementById('formReserva');
-    if (!f.checkValidity()) return alert("Por favor completa los campos obligatorios.");
+    if (!f.checkValidity()) {
+      Swal.fire({ icon: 'warning', title: 'Campos incompletos', text: 'Por favor llena los campos obligatorios.' });
+      return;
+    }
     const btn = document.getElementById('btnGuardar');
     btn.classList.add('is-loading');
     const d = {}; new FormData(f).forEach((v, k) => d[k] = v);
 
     google.script.run
-      .withSuccessHandler(m => { alert(m); navegar('vDash'); ejecutarAcceso(); })
-      .withFailureHandler(e => { alert(e.message); btn.classList.remove('is-loading'); })
+      .withSuccessHandler(m => { 
+        Swal.fire({ icon: 'success', title: '¡Éxito!', text: m });
+        navegar('vDash'); 
+        ejecutarAcceso(); 
+      })
+      .withFailureHandler(e => { 
+        Swal.fire({ icon: 'error', title: 'Error', text: e.message });
+        btn.classList.remove('is-loading'); 
+      })
       .registrarSolicitud(d);
   }
 
   function cancelar(id) {
-    if (confirm("¿Cancelar solicitud?")) google.script.run.withSuccessHandler(() => ejecutarAcceso()).cambiarEstadoSolicitud(id, "Cancelado");
+    Swal.fire({
+      title: '¿Confirmas la cancelación?',
+      text: "Esta acción notificará al encargado.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      confirmButtonText: 'Sí, cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        google.script.run.withSuccessHandler(() => {
+          Swal.fire('Cancelada', 'Tu solicitud ha sido cancelada.', 'success');
+          ejecutarAcceso();
+        }).cambiarEstadoSolicitud(id, "Cancelado");
+      }
+    });
   }
 
   function toggleOtro(select, id) { document.getElementById(id).classList.toggle('is-hidden', select.value !== 'Otro'); }
