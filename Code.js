@@ -162,8 +162,12 @@ function cambiarEstadoSolicitud(idFila, estado) {
 
   const htmlBody = generarCuerpoCorreo("Actualización de Solicitud", nombre, `Se ha actualizado el estado de tu solicitud de transporte.`, detalles);
 
-  GmailApp.sendEmail(emailUsuario + "," + EMAIL_ENCARGADO, `Tu solicitud de transporte ha sido ${estado}`, "", {
+  GmailApp.sendEmail(emailUsuario, `Tu solicitud de transporte ha sido ${estado}`, "", {
     htmlBody: htmlBody
+  });
+
+  GmailApp.sendEmail(EMAIL_ENCARGADO, "Alerta: Cancelación Solicitud de Transporte", "", {
+    htmlBody: generarCuerpoCorreo("Cancelación de Solicitud Recibida", "Administrador", `El colaborador ${f.nombre} ha cancelado su solicitud.`, detalles)
   });
 
   return "Estado actualizado.";
